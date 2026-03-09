@@ -32,10 +32,8 @@ function initDataLayer(): void {
     return;
   }
   
-  
-  if (!window.dataLayer) {
-    window.dataLayer = [];
-  }
+  // Safe initialization: never overwrite existing dataLayer
+  window.dataLayer = window.dataLayer || [];
 }
 
 /**
