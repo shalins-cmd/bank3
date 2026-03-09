@@ -25,5 +25,6 @@ export interface ChatMessage {
 declare global {
   interface Window {
     dataLayer?: any[];
+    __GTM_DATA_LAYER__?: any[]; // Stored reference to prevent React Proxy wrapping
   }
 }

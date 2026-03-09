@@ -60,6 +60,7 @@ export type AllGTMEvents =
  * Features:
  * - Type-safe event pushing
  * - SSR-safe (checks for window existence)
+ * - Restores the original GTM dataLayer reference (prevents React Proxy issues)
  * - Validates dataLayer is an array before pushing
  * - Development warnings for missing GTM
  * - Production-clean (no console logs in production)
@@ -71,6 +72,12 @@ export function pushGTMEvent(event: AllGTMEvents): boolean {
   // SSR Safety: Check if window exists (prevents SSR errors)
   if (typeof window === 'undefined') {
     return false;
+  }
+
+  // CRITICAL: Restore the original GTM dataLayer reference
+  // This prevents React's Proxy from breaking GTM event detection
+  if (window.__GTM_DATA_LAYER__) {
+    window.dataLayer = window.__GTM_DATA_LAYER__;
   }
 
   // Check if dataLayer exists and is an array
@@ -144,4 +151,14 @@ export function pushProductEvent(
     product,
     product_category: category
   });
+}
+
+/**
+ * Declare window properties for GTM
+ */
+declare global {
+  interface Window {
+    dataLayer?: any[];
+    __GTM_DATA_LAYER__?: any[]; // Stored reference to prevent React Proxy wrapping
+  }
 }

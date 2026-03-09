@@ -32,8 +32,15 @@ function initDataLayer(): void {
     return;
   }
   
-  // Safe initialization: never overwrite existing dataLayer
-  window.dataLayer = window.dataLayer || [];
+  // CRITICAL: Restore the original GTM dataLayer reference
+  // This prevents React's Proxy from intercepting GTM event detection
+  if (window.__GTM_DATA_LAYER__) {
+    window.dataLayer = window.__GTM_DATA_LAYER__;
+  } else {
+    // Fallback if no stored reference (shouldn't happen in normal operation)
+    window.dataLayer = window.dataLayer || [];
+    window.__GTM_DATA_LAYER__ = window.dataLayer;
+  }
 }
 
 /**
@@ -76,6 +83,12 @@ export function pushToDataLayer(
   initDataLayer();
 
   try {
+    // CRITICAL: Before pushing, ensure we have the original GTM dataLayer reference
+    // This is essential because React may have wrapped it in a Proxy
+    if (window.__GTM_DATA_LAYER__) {
+      window.dataLayer = window.__GTM_DATA_LAYER__;
+    }
+
     // Construct the event object
     // The "event" property MUST be first and always present - GTM requires this
     const eventObject: GTMEventObject = {
@@ -84,7 +97,7 @@ export function pushToDataLayer(
     };
 
     // Push the plain object to dataLayer
-    // CRITICAL: We use the push method directly. We NEVER override or wrap it.
+    // CRITICAL: We use the push method directly on the original, un-proxied dataLayer.
     // GTM's dataLayer expects to receive plain objects via push()
     window.dataLayer.push(eventObject);
 
@@ -101,11 +114,12 @@ export function pushToDataLayer(
 }
 
 /**
- * Declare window.dataLayer for TypeScript
- * Extend the global Window interface to include our dataLayer
+ * Declare window properties for GTM
+ * Extend the global Window interface to include dataLayer and storage reference
  */
 declare global {
   interface Window {
     dataLayer?: any[];
+    __GTM_DATA_LAYER__?: any[]; // Stored reference to prevent React Proxy wrapping
   }
 }
