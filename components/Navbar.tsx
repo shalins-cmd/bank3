@@ -143,8 +143,6 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn, onLogout, use
                 size="sm"
                 gtmId="nav-login-btn"
                 onClick={() => {
-                  console.log('CLICK FIRED: login_modal_open');
-                  pushToDataLayer('login_modal_open', { source: 'navbar' });
                   onLoginClick();
                 }}
                 className="shadow-md"
@@ -216,8 +214,6 @@ const Navbar: React.FC<NavbarProps> = ({ onLoginClick, isLoggedIn, onLogout, use
                   variant="primary" 
                   className="w-full justify-center"
                   onClick={() => {
-                    console.log('CLICK FIRED: login_modal_open');
-                    pushToDataLayer('login_modal_open', { source: 'navbar' });
                     onLoginClick();
                   }}
                 >
