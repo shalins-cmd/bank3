@@ -9,8 +9,6 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     document.title = 'My Dashboard - Nova Bank';
-    console.log('CLICK FIRED: page_view');
-    pushToDataLayer('page_view', { page_title: 'Dashboard', page_path: '/dashboard' });
   }, []);
 
   const handleQuickAction = (action: string, path: string) => {

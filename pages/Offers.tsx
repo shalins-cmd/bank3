@@ -13,8 +13,6 @@ const OFFERS = [
 const Offers: React.FC = () => {
   useEffect(() => {
     document.title = 'Exclusive Offers - Nova Bank';
-    console.log('CLICK FIRED: page_view');
-    pushToDataLayer('page_view', { page_title: 'Offers', page_path: '/offers' });
   }, []);
 
   const handleActivate = (offerId: string) => {

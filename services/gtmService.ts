@@ -75,12 +75,10 @@ export function pushGTMEvent(event: AllGTMEvents): boolean {
 
   // Check if dataLayer exists and is an array
   if (!window.dataLayer || !Array.isArray(window.dataLayer)) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn(
-        '[GTM] dataLayer is not initialized or is not an array. ' +
-        'Ensure GTM is properly configured and initialized.'
-      );
-    }
+    console.warn(
+      '[GTM] dataLayer is not initialized or is not an array. ' +
+      'Ensure GTM is properly configured and initialized.'
+    );
     return false;
   }
 
@@ -88,9 +86,7 @@ export function pushGTMEvent(event: AllGTMEvents): boolean {
     window.dataLayer.push(event);
     return true;
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[GTM] Failed to push event to dataLayer:', error);
-    }
+    console.warn('[GTM] Failed to push event to dataLayer:', error);
     return false;
   }
 }

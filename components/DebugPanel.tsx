@@ -8,37 +8,33 @@ const DebugPanel: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // GTM-Compliant Event Listener
-    // Instead of overriding dataLayer.push (which breaks GTM), we use a Proxy
-    // to intercept push calls WITHOUT replacing the method.
-    // This allows GTM to work normally while we capture events for debugging.
-    
-    if (typeof window === 'undefined' || !window.dataLayer) {
+    if (typeof window === 'undefined') {
       return;
     }
 
-    const path = ['dataLayer'];
-    const handler = {
-      get(target: any, prop: string | symbol) {
-        if (prop === 'push') {
-          return function(...args: any[]) {
-            // Capture event for debug panel
-            setEvents(prev => [...prev, ...args]);
-            // Call the original push method
-            return Array.prototype.push.apply(target, args);
-          };
-        }
-        return Reflect.get(target, prop);
+    const existingEvents = (window.dataLayer || []).filter(
+      (entry): entry is Record<string, unknown> =>
+        !!entry && typeof entry === 'object' && 'event' in entry
+    );
+
+    if (existingEvents.length > 0) {
+      setEvents(existingEvents);
+    }
+
+    const handleDataLayerPush = (event: Event) => {
+      const customEvent = event as CustomEvent<Record<string, unknown>>;
+
+      if (!customEvent.detail) {
+        return;
       }
+
+      setEvents(prev => [...prev, customEvent.detail]);
     };
 
-    // Replace dataLayer with a Proxy that intercepts push
-    const originalDataLayer = window.dataLayer;
-    window.dataLayer = new Proxy(originalDataLayer, handler);
+    window.addEventListener('gtm:dataLayerPush', handleDataLayerPush as EventListener);
 
     return () => {
-      // Restore original dataLayer
-      window.dataLayer = originalDataLayer;
+      window.removeEventListener('gtm:dataLayerPush', handleDataLayerPush as EventListener);
     };
   }, []);
 

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -16,7 +16,7 @@ import Modal from './components/ui/Modal';
 import Button from './components/ui/Button';
 import ChatBot from './components/ChatBot';
 import DebugPanel from './components/DebugPanel';
-import { pushToDataLayer } from './lib/gtm';
+import { pushToDataLayer, trackPageView } from './lib/gtm';
 
 interface ProtectedRouteProps {
   isLoggedIn: boolean;
@@ -35,6 +35,23 @@ const ProtectedRoute = ({ isLoggedIn, onLoginRequest, children }: ProtectedRoute
     );
   }
   return <>{children}</>;
+};
+
+const RouteTracker = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      trackPageView({
+        page_path: `${location.pathname}${location.search}`,
+        login_status: isLoggedIn ? 'logged_in' : 'guest'
+      });
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [location.pathname, location.search]);
+
+  return null;
 };
 
 function App() {
@@ -72,6 +89,7 @@ function App() {
 
   return (
     <HashRouter>
+      <RouteTracker isLoggedIn={isLoggedIn} />
       <div className="flex flex-col min-h-screen font-sans text-gray-900">
         <Navbar 
           isLoggedIn={isLoggedIn}

@@ -11,8 +11,6 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     document.title = 'Nova Bank - Online Banking Solutions';
-    console.log('CLICK FIRED: page_view');
-    pushToDataLayer('page_view', { page_title: 'Home', page_path: '/' });
   }, []);
 
   return (

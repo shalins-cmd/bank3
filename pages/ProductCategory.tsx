@@ -15,15 +15,8 @@ const ProductCategory: React.FC<ProductCategoryProps> = ({ title, description, f
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set page title and track page view
     document.title = `${title} - Nova Bank`;
-    // manual page view for SPA navigation
-    console.log('CLICK FIRED: virtual_page_view');
-    pushToDataLayer('virtual_page_view', {
-      page_path: location.pathname,
-      page_title: title
-    });
-  }, [location, title]);
+  }, [title]);
 
   const handleApply = () => {
     console.log('CLICK FIRED: application_start');

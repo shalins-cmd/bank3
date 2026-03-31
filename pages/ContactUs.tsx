@@ -8,8 +8,6 @@ const ContactUs: React.FC = () => {
 
   useEffect(() => {
     document.title = 'Contact Us - Nova Bank Support';
-    console.log('CLICK FIRED: page_view');
-    pushToDataLayer('page_view', { page_title: 'Contact Us', page_path: '/support/contact' });
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {

@@ -16,8 +16,6 @@ const Transfer: React.FC = () => {
 
   useEffect(() => {
     document.title = 'Transfer Funds - Nova Bank';
-    console.log('CLICK FIRED: page_view');
-    pushToDataLayer('page_view', { page_title: 'Transfer', page_path: '/transfer' });
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

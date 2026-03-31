@@ -17,8 +17,6 @@ const BillPay: React.FC = () => {
 
   useEffect(() => {
     document.title = 'Bill Payments & Recharge - Nova Bank';
-    console.log('CLICK FIRED: page_view');
-    pushToDataLayer('page_view', { page_title: 'Bill Pay', page_path: '/bill-pay' });
   }, []);
 
   const handlePay = (e: React.FormEvent) => {
